@@ -4,13 +4,14 @@
      $glog2,fbin1,fbin2,delv1,delv2,count1,count2,delwl1,delwl2,resf1,
      $resf2,wl1,wl2,dvks1,dvks2,tau1,tau2,emm1,emm2,hbarw1,hbarw2,xcl,
      $ycl,zcl,rcl,op1,fcl,edens,encl,dens,taug,emmg,yskp,zskp,iband,
-     $ifat1,ifat2,ifphn)
+     $ifat1,ifat2,ifphn,usky1,vsky1,wsky1,usky2,vsky2,wsky2)
 c   Version of October 18, 2004
       implicit real*8 (a-h,o-z)
       DIMENSION RV(*),GRX(*),GRY(*),GRZ(*),RVQ(*),GRXQ(*),GRYQ(*),GRZQ(*
      $),SLUMP1(*),SLUMP2(*),MMSAVE(*),THETA(*),RHO(*),AA(*),BB(*)
       DIMENSION SNTH(*),CSTH(*),SNFI(*),CSFI(*),tld(*),gmag1(*),
-     $gmag2(*),glog1(*),glog2(*)
+     $gmag2(*),glog1(*),glog2(*),usky1(*),vsky1(*),wsky1(*),usky2(*),
+     $vsky2(*),wsky2(*)
       dimension xcl(*),ycl(*),zcl(*),rcl(*),op1(*),fcl(*),dens(*),
      $encl(*),edens(*),yskp(*),zskp(*)
       dimension fbin1(*),fbin2(*),delv1(*),delv2(*),count1(*),count2(*),
@@ -92,6 +93,8 @@ c   Version of October 18, 2004
      $-cosi**2)/SINI**2
       CICP=COSI*COSPH
       CISP=COSI*SINPH
+      SICP=SINI*COSPH
+      SISP=SINI*SINPH
       XLOS=COSPH*SINI
       YLOS=-SINPH*SINI
       ZLOS=COSI
@@ -202,14 +205,40 @@ c   Version of October 18, 2004
       STSF=SINTH*SINFI
       STCF=SINTH*COSFI
       IF(TEST.LE..0625d0)GOTO 39
-      IF(RVQ(IX).EQ.-1.d0) GOTO 26
+    !   IF(RVQ(IX).EQ.-1.d0) GOTO 26
+      if(rvq(ix).eq.-1.d0) then
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+          usky1(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+          vsky1(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+          wsky1(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+        endif
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+          usky2(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+          vsky2(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+          wsky2(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+        endif
+        goto 26
+      endif
       GX=GRXQ(IX)
       GY=RTLEFT*GRYQ(IX)
       GZ=UPDOWN*GRZQ(IX)
       R=RVQ(IX)
       grmag=gmag2(ix)
       GOTO 49
-   39 IF(RV(IX).EQ.-1.d0) GOTO 26
+!    39 IF(RV(IX).EQ.-1.d0) GOTO 26
+   39 if(rv(ix).eq.-1.d0) then
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+          usky1(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+          vsky1(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+          wsky1(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+        endif
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+          usky2(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+          vsky2(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+          wsky2(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+        endif
+        goto 26
+      endif
       GX=GRX(IX)
       GY=RTLEFT*GRY(IX)
       GZ=UPDOWN*GRZ(IX)
@@ -219,6 +248,16 @@ c   Version of October 18, 2004
       ZZ=R*COSTH
       YY=R*COMP*STSF
       XX=CMPD+COMP*STCF*R
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+        usky1(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+        vsky1(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+        wsky1(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+      endif
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+        usky2(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+        vsky2(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+        wsky2(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+      endif
       if(mpage.ne.5) goto 174
       if(cosgam.gt.0.d0) goto 174
       ipc=ipc+1
@@ -463,14 +502,40 @@ c    of accuracy for distorted stars without those terms. See notes.
       STSF=SINTH*SINFI
       STCF=SINTH*COSFI
       IF(TEST.LE..0625d0)GOTO 139
-      IF(RV(IX).EQ.-1.d0) GOTO 126
+    !   IF(RV(IX).EQ.-1.d0) GOTO 126
+      if(rv(ix).eq.-1.d0) then
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+          usky1(mmsave(i)+j)=0.d0
+          vsky1(mmsave(i)+j)=0.d0
+          wsky1(mmsave(i)+j)=0.d0
+        endif
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+            usky2(mmsave(i)+j)=0.d0
+            vsky2(mmsave(i)+j)=0.d0
+            wsky2(mmsave(i)+j)=0.d0
+          endif
+          goto 126
+      endif
       GX=GRX(IX)
       GY=RTLEFT*GRY(IX)
       GZ=UPDOWN*GRZ(IX)
       R=RV(IX)
       grmag=gmag1(ix)
       GOTO 149
-  139 IF(RVQ(IX).EQ.-1.d0) GOTO 126
+!   139 IF(RVQ(IX).EQ.-1.d0) GOTO 126
+  139 if(rvq(ix).eq.-1.d0) then
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+          usky1(mmsave(i)+j)=0.d0
+          vsky1(mmsave(i)+j)=0.d0
+          wsky1(mmsave(i)+j)=0.d0
+        endif
+        if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+          usky2(mmsave(i)+j)=0.d0
+          vsky2(mmsave(i)+j)=0.d0
+          wsky2(mmsave(i)+j)=0.d0
+        endif
+        goto 126
+      endif
       GX=GRXQ(IX)
       GY=RTLEFT*GRYQ(IX)
       GZ=UPDOWN*GRZQ(IX)
@@ -480,11 +545,31 @@ c    of accuracy for distorted stars without those terms. See notes.
       IF(COSGAM.LT.0.d0) GOTO 104
       SIGN=0.d0
       OLSIGN=0.d0
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+        usky1(mmsave(i)+j)=0.d0
+        vsky1(mmsave(i)+j)=0.d0
+        wsky1(mmsave(i)+j)=0.d0
+      endif
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+        usky2(mmsave(i)+j)=0.d0
+        vsky2(mmsave(i)+j)=0.d0
+        wsky2(mmsave(i)+j)=0.d0
+      endif
       GOTO 126
   104 COSGAM=-COSGAM
       ZZ=R*COSTH
       YY=R*COMPP*STSF
       XX=CMPPD+COMPP*STCF*R
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.1) then
+        usky1(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+        vsky1(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+        wsky1(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+      endif
+      if(updown.gt.0.and.rtleft.gt.0.and.komp.eq.2) then
+        usky2(mmsave(i)+j)=(xx-qfacd)*sinph+yy*cosph
+        vsky2(mmsave(i)+j)=(-xx+qfacd)*cicp+yy*cisp+zz*sini
+        wsky2(mmsave(i)+j)=-(xx-qfacd)*sicp-yy*sisp+zz*cosi
+      endif
       DARKEN=1.d0-X+X*COSGAM
       if(ld.ne.2) goto 142
       if(cosgam.eq.0.d0) goto 142

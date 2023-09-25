@@ -724,8 +724,12 @@ int intern_add_mesh_to_dict(PyObject *dict, PHOEBE_mesh *mesh, char *key, int co
     PyObject *tuple = PyTuple_New(mesh->verts*mesh->elems);
 
     for (i = 0; i < mesh->verts; i++)
-        for (j = 0; j < mesh->elems; j++)
+        for (j = 0; j < mesh->elems; j++) {
             PyTuple_SetItem(tuple, i*mesh->elems+j, Py_BuildValue("d", mesh->mesh[i][j][col]));
+            if (col >= 15) {
+                printf("i=%d j=%d c=%d v=%lf\n", i, j, col, mesh->mesh[i][j][col]);
+            }
+        }
     PyDict_SetItem(dict, Py_BuildValue("s", key), tuple);
 
     return SUCCESS;
@@ -901,6 +905,9 @@ static PyObject *phoebeLC(PyObject *self, PyObject *args)
         intern_add_mesh_to_dict(dict, mesh1, "csbt1",  12);
         intern_add_mesh_to_dict(dict, mesh1, "tloc1",  13);
         intern_add_mesh_to_dict(dict, mesh1, "Inorm1", 14);
+        intern_add_mesh_to_dict(dict, mesh1, "u1",     15);
+        intern_add_mesh_to_dict(dict, mesh1, "v1",     16);
+        intern_add_mesh_to_dict(dict, mesh1, "w1",     17);
 
         intern_add_mesh_to_dict(dict, mesh2, "vcx2",   0);
         intern_add_mesh_to_dict(dict, mesh2, "vcy2",   1);
@@ -917,6 +924,9 @@ static PyObject *phoebeLC(PyObject *self, PyObject *args)
         intern_add_mesh_to_dict(dict, mesh2, "csbt2",  12);
         intern_add_mesh_to_dict(dict, mesh2, "tloc2",  13);
         intern_add_mesh_to_dict(dict, mesh2, "Inorm2", 14);
+        intern_add_mesh_to_dict(dict, mesh2, "u2",     15);
+        intern_add_mesh_to_dict(dict, mesh2, "v2",     16);
+        intern_add_mesh_to_dict(dict, mesh2, "w2",     17);
 
         PyTuple_SetItem(combo, 1, dict);
     }

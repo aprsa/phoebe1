@@ -341,8 +341,8 @@ int phoebe_compute_lc_using_wd (PHOEBE_curve *curve, PHOEBE_vector *indep, char 
 		L3perc = 1;
 
     /* If meshes are requested, flip the mswitch: */
-    if (mesh1 && mesh2)
-        mswitch = TRUE;
+	if (mesh1 && mesh2)
+		mswitch = TRUE;
 
 	/* If horizon is requested, flip the hswitch: */
 	if (hrho && htheta && hAc && hAs)
@@ -402,8 +402,8 @@ int phoebe_compute_rv1_using_wd (PHOEBE_curve *rv1, PHOEBE_vector *indep, char *
 	L3perc = 0;
 
     /* If meshes are requested, flip the mswitch: */
-    if (mesh1 && mesh2)
-        mswitch = TRUE;
+	if (mesh1 && mesh2)
+		mswitch = TRUE;
 
 	/* If horizon is requested, flip the hswitch: */
 	if (hrho && htheta && hAc && hAs)
@@ -461,8 +461,8 @@ int phoebe_compute_rv2_using_wd (PHOEBE_curve *rv2, PHOEBE_vector *indep, char *
 	L3perc = 0;
 
     /* If meshes are requested, flip the mswitch: */
-    if (mesh1 && mesh2)
-        mswitch = TRUE;
+	if (mesh1 && mesh2)
+		mswitch = TRUE;
 
 	/* If horizon is requested, flip the hswitch: */
 	if (hrho && htheta && hAc && hAs)
@@ -556,8 +556,8 @@ int phoebe_compute_pos_using_wd (PHOEBE_vector *poscoy, PHOEBE_vector *poscoz, c
 	L3perc  = 0;
 
     /* If meshes are requested, flip the mswitch: */
-    if (mesh1 && mesh2)
-        mswitch = TRUE;
+	if (mesh1 && mesh2)
+		mswitch = TRUE;
 
 	/* If horizon is requested, flip the hswitch: */
 	if (hrho && htheta && hAc && hAs)
@@ -1571,3 +1571,72 @@ int calculate_teff_from_bv_index (int star_type, double bv, double *teff)
 	*teff = 0.0;
 	return ERROR_CINDEX_INVALID_TYPE;
 	}
+
+double **phoebe_xyz_to_uvw(int star, int nelem, double *x, double *y, double *z, double L, double p, double i) {
+    /**
+     * Transforms Roche coordinate to plane of sky coordinates.
+     * 
+     * @star: 1 for primary, 2 for secondary
+     * @nelem: length of arrays x, y, z
+     * @x: array of Roche x-coordinate
+     * @y: array of Roche y-coordinate
+     * @z: array of Roche z-coordinate
+     * @L: longitude of the ascending node, in degrees
+     * @w: argument of periastron, in degrees
+     * @i: inclination, in degrees
+     * 
+     * Returns: a 3-D vector of u, v, w coordinates
+     */
+
+    int k;
+    double T11, T12, T13, T21, T22, T23, T31, T32, T33;
+    double *u, *v, *w;
+    double **uvw;
+
+    u = phoebe_malloc(nelem*sizeof(*u));
+    v = phoebe_malloc(nelem*sizeof(*v));
+    w = phoebe_malloc(nelem*sizeof(*w));
+
+    uvw = phoebe_malloc(3*sizeof(*uvw));
+
+    /* Transform from degrees to radians: */
+    L *= M_PI/180;
+    p *= M_PI/180;
+    i *= M_PI/180;
+
+    if (star == 1) {
+        T11 = -cos(L)*cos(p) + sin(L)*cos(i)*sin(p);
+        T12 =  cos(L)*sin(p) + sin(L)*cos(i)*cos(p);
+        T13 = -sin(L)*sin(i);
+        T21 = -sin(L)*cos(p) - cos(L)*cos(i)*sin(p);
+        T22 =  sin(L)*sin(p) - cos(L)*cos(i)*cos(p);
+        T23 =  cos(L)*sin(i);
+        T31 =  sin(i)*sin(p);
+        T32 =  sin(i)*cos(p);
+        T33 =  cos(i);
+    }
+    else /* star == 2 */ {
+        T11 =  cos(L)*cos(p) - sin(L)*cos(i)*sin(p);
+        T12 = -cos(L)*sin(p) - sin(L)*cos(i)*cos(p);
+        T13 = -sin(L)*sin(i);
+        T21 =  sin(L)*cos(p) + cos(L)*cos(i)*sin(p);
+        T22 = -sin(L)*sin(p) + cos(L)*cos(i)*cos(p);
+        T23 =  cos(L)*sin(i);
+        T31 = -sin(i)*sin(p);
+        T32 = -sin(i)*cos(p);
+        T33 =  cos(i);
+    }
+
+    for (k=0; k<nelem; k++) {
+        u[k] = T11*x[k] + T12*y[k] + T13*z[k];
+        v[k] = T21*x[k] + T22*y[k] + T23*z[k];
+        w[k] = T31*x[k] + T32*y[k] + T33*z[k];
+    }
+
+
+    uvw[0] = u;
+    uvw[1] = v;
+    uvw[2] = w;
+
+    return uvw;
+}

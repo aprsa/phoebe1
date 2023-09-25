@@ -198,7 +198,8 @@ c          hAs   ..   Fourier sine coefficients, useful for debugging
       character lcin*(*)
       double precision mesh1(*),mesh2(*),hrho(*),htheta(*),hAc(*),hAs(*)
       dimension tloc1(igsmax),tloc2(igsmax),xInorm1(igsmax),
-     $xInorm2(igsmax)
+     $xInorm2(igsmax),usky1(igsmax),vsky1(igsmax),wsky1(igsmax),
+     $usky2(igsmax),vsky2(igsmax),wsky2(igsmax)
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       dimension rv(igsmax),grx(igsmax),gry(igsmax),grz(igsmax),
@@ -587,7 +588,8 @@ c~       write(*,*) vol1,poth,vol2,potc,vl1,p1ap,vl2,p2ap,dpdx1,dpdx2
      $gmag2,glog1,glog2,fbin1,fbin2,delv1,delv2,count1,count2,delwl1,
      $delwl2,resf1,resf2,wl1,wl2,dvks1,dvks2,tau1,tau2,emm1,emm2,hbarw1,
      $hbarw2,xcl,ycl,zcl,rcl,op1,fcl,dens,encl,edens,taug,emmg,yskp,
-     $zskp,mode,iband,ifat1,ifat2,1,tloc1,tloc2,xInorm1,xInorm2)
+     $zskp,mode,iband,ifat1,ifat2,1,tloc1,tloc2,xInorm1,xInorm2,
+     $usky1,vsky1,wsky1,usky2,vsky2,wsky2)
       if(ierrcode.ne.0) status=ierrcode
       if(ierrcode.ne.0) return
      KH=0
@@ -699,7 +701,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      $gmag2,glog1,glog2,fbin1,fbin2,delv1,delv2,count1,count2,delwl1,
      $delwl2,resf1,resf2,wl1,wl2,dvks1,dvks2,tau1,tau2,emm1,emm2,hbarw1,
      $hbarw2,xcl,ycl,zcl,rcl,op1,fcl,dens,encl,edens,taug,emmg,yskp,
-     $zskp,mode,iband,ifat1,ifat2,0,tloc1,tloc2,xInorm1,xInorm2)
+     $zskp,mode,iband,ifat1,ifat2,0,tloc1,tloc2,xInorm1,xInorm2,
+     $usky1,vsky1,wsky1,usky2,vsky2,wsky2)
       if(ierrcode.ne.0) status=ierrcode
       if(ierrcode.ne.0) return
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -710,7 +713,7 @@ c     grv1(igsmax),grv2(igsmax),rftemp(igsmax),
 c     $rf1(igsmax),rf2(igsmax)
 c
       if (mswitch.eq.1) then
-        nc = 15
+        nc = 18
         do 665 igsidx=1,mmsave(n1+1)
           mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+1)=xx1(igsidx)
           mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+2)=yy1(igsidx)
@@ -728,6 +731,9 @@ c
           mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+14)=tloc1(igsidx)
           mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+15)=
      $                                                   xInorm1(igsidx)
+          mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+16)=usky1(igsidx)
+          mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+17)=vsky1(igsidx)
+          mesh1((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+18)=wsky1(igsidx)
   665   continue
         do 666 igsidx=1,mmsave(n2+1)
           mesh2((idx-1)*mmsave(n1+1)*nc+(igsidx-1)*nc+1)=xx2(igsidx)
@@ -746,7 +752,10 @@ c
           mesh2((idx-1)*mmsave(n2+1)*nc+(igsidx-1)*nc+14)=tloc2(igsidx)
           mesh2((idx-1)*mmsave(n2+1)*nc+(igsidx-1)*nc+15)=
      $                                                   xInorm2(igsidx)
-  666   continue
+          mesh2((idx-1)*mmsave(n2+1)*nc+(igsidx-1)*nc+16)=usky2(igsidx)
+          mesh2((idx-1)*mmsave(n2+1)*nc+(igsidx-1)*nc+17)=vsky2(igsidx)
+          mesh2((idx-1)*mmsave(n2+1)*nc+(igsidx-1)*nc+18)=wsky2(igsidx)
+666   continue
       endif
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       HTT=HOT

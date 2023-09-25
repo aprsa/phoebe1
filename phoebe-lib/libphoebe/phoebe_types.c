@@ -2859,7 +2859,7 @@ int phoebe_curve_compute(PHOEBE_curve *curve, PHOEBE_vector *nodes, int index, P
 
     /* Mesh lists to be passed to WD: */
     double *list1 = NULL, *list2 = NULL;
-    int N1, N2, nelems1, nelems2;
+    int N1, N2, nelems1, nelems2, verts1, verts2;
 
 	/* Horizon lists to be passed to WD: */
 	double *hrho = NULL, *htheta = NULL, *hAc= NULL, *hAs = NULL;
@@ -2973,13 +2973,15 @@ int phoebe_curve_compute(PHOEBE_curve *curve, PHOEBE_vector *nodes, int index, P
     if (mesh1) {
         phoebe_parameter_get_value(phoebe_parameter_lookup("phoebe_grid_finesize1"), &N1);
         nelems1 = intern_get_num_wd_elems(N1);
-        list1 = phoebe_malloc(fti ? verts->dim : nodes->dim * nelems1*mesh1->ncols*sizeof(*list1));
+        verts1 = fti ? verts->dim : nodes->dim;
+        list1 = phoebe_malloc(verts1*nelems1*mesh1->ncols*sizeof(*list1));
     }
 
     if (mesh2) {
         phoebe_parameter_get_value(phoebe_parameter_lookup("phoebe_grid_finesize2"), &N2);
         nelems2 = intern_get_num_wd_elems(N2);
-        list2 = phoebe_malloc(fti ? verts->dim : nodes->dim * nelems2*mesh2->ncols*sizeof(*list2));
+        verts2 = fti ? verts->dim : nodes->dim;
+        list2 = phoebe_malloc(verts2*nelems2*mesh2->ncols*sizeof(*list2));
     }
 
     /* If horizon is requested, allocate the structures: */
@@ -3681,7 +3683,7 @@ PHOEBE_mesh *phoebe_mesh_new()
     
     mesh->verts = 0;
     mesh->elems = 0;
-    mesh->ncols = 15;
+    mesh->ncols = 18;
     
     mesh->mesh = NULL;
     

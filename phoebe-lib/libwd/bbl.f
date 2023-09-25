@@ -8,7 +8,7 @@
      $count2,delwl1,delwl2,resf1,resf2,wl1,wl2,dvks1,dvks2,tau1,tau2,
      $emm1,emm2,hbarw1,hbarw2,xcl,ycl,zcl,rcl,op1,fcl,dens,encl,edens,
      $taug,emmg,yskp,zskp,mode,iband,ifat1,ifat2,ifphn,tloc1,tloc2,
-     $xInorm1,xInorm2)
+     $xInorm1,xInorm2,usky1,vsky1,wsky1,usky2,vsky2,wsky2)
 c  Version of December 18, 2003
       implicit real*8 (a-h,o-z)
       DIMENSION RV(*),GRX(*),GRY(*),GRZ(*),RVQ(*),GRXQ(*),GRYQ(*),
@@ -17,7 +17,7 @@ c  Version of December 18, 2003
      $,GLUMP1(*),GLUMP2(*),XX1(*),XX2(*),YY1(*),YY2(*),ZZ1(*),ZZ2(*),
      $GRV1(*),GRV2(*),RFTEMP(*),RF1(*),RF2(*),CSBT1(*),CSBT2(*)
      $,GMAG1(*),GMAG2(*),glog1(*),glog2(*),TLOC1(*),TLOC2(*),xInorm1(*),
-     $xInorm2(*)
+     $xInorm2(*),usky1(*),vsky1(*),wsky1(*),usky2(*),vsky2(*),wsky2(*)
       dimension fbin1(*),fbin2(*),delv1(*),delv2(*),count1(*),count2(*),
      $delwl1(*),delwl2(*),resf1(*),resf2(*),wl1(*),wl2(*),dvks1(*),
      $dvks2(*),tau1(*),tau2(*),hbarw1(*),hbarw2(*),taug(*),emm1(*),
@@ -88,7 +88,8 @@ c  Version of December 18, 2003
      $somkul,d,wl,snth,csth,snfi,csfi,tld,gmag1,gmag2,glog1,glog2,fbin1,
      $fbin2,delv1,delv2,count1,count2,delwl1,delwl2,resf1,resf2,wl1,wl2,
      $dvks1,dvks2,tau1,tau2,emm1,emm2,hbarw1,hbarw2,xcl,ycl,zcl,rcl,op1,
-     $fcl,edens,encl,dens,taug,emmg,yskp,zskp,iband,ifat1,ifat2,ifphn)
+     $fcl,edens,encl,dens,taug,emmg,yskp,zskp,iband,ifat1,ifat2,ifphn,
+     $usky1,vsky1,wsky1,usky2,vsky2,wsky2)
       if(ierrcode.ne.0) return
      VRA1=0.d0
       VRA2=0.d0

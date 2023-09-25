@@ -87,4 +87,6 @@ int calculate_teff_from_bv_index (int star_type, double bv, double *teff);
 bool phoebe_phsv_constrained (int wd_model);
 bool phoebe_pcsv_constrained (int wd_model);
 
+double **phoebe_xyz_to_uvw(int star, int nelem, double *x, double *y, double *z, double L, double p, double i);
+
 #endif
